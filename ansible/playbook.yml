@@ -1,0 +1,56 @@
+- name: K3s master setup
+  hosts: master
+  become: true
+  become_user: root
+  tasks:
+    - name: Fetch installation script
+      ansible.builtin.get_url:
+        url: https://get.k3s.io
+        dest: /tmp/k3s-install.sh
+        mode: "0755"
+    - name: Install K3s
+      ansible.builtin.command: >
+        /tmp/k3s-install.sh server
+        --cluster-init
+        --disable-agent
+        --flannel-iface {{ hostvars[inventory_hostname].internal_iface }}
+      args:
+        creates: /usr/local/bin/k3s
+      register: k3s_install
+    - name: Wait for kubeconfig
+      ansible.builtin.wait_for:
+        path: /etc/rancher/k3s/k3s.yaml
+        state: present
+    - name: Fetch kubeconfig
+      ansible.builtin.fetch:
+        src: /etc/rancher/k3s/k3s.yaml
+        dest: k3s.yaml
+        flat: true
+    - name: Wait for agent token
+      ansible.builtin.wait_for:
+        path: /var/lib/rancher/k3s/server/agent-token
+        state: present
+    - name: Fetch agent token
+      ansible.builtin.fetch:
+        src: /var/lib/rancher/k3s/server/agent-token
+        dest: agent-token
+        flat: true
+
+- name: K3s slave setup
+  hosts: slave
+  become: true
+  become_user: root
+  tasks:
+    - name: Fetch installation script
+      ansible.builtin.get_url:
+        url: https://get.k3s.io
+        dest: /tmp/k3s-install.sh
+        mode: "0755"
+    - name: Install K3s
+      ansible.builtin.command: >
+        /tmp/k3s-install.sh agent
+        --server https://{{ hostvars['master'].internal_host }}:6443
+        --token {{ lookup('file', 'agent-token') }}
+        --flannel-iface {{ hostvars[inventory_hostname].internal_iface }}
+      args:
+        creates: /usr/local/bin/k3s-agent

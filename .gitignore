@@ -1,2 +1,6 @@
 .DS_Store
+/.vscode/
+
 /.vagrant/
+/ansible/agent-token
+/ansible/k3s.yaml
