@@ -1,5 +1,5 @@
-variable "secret" {
-  description = "some secret"
+variable "gitlabRunnerToken" {
+  description = "GitLab Runner Token"
   type        = string
   sensitive   = true
 }
