@@ -94,6 +94,25 @@ resource "helm_release" "kube_prometheus_stack" {
         accessModes:
           - ReadWriteOnce
         size: 1Gi
+      dashboardProviders:
+        dashboardproviders.yaml:
+          apiVersion: 1
+          providers:
+            - name: 'default'
+              orgId: 1
+              folder: ''
+              type: file
+              disableDeletion: false
+              editable: true
+              options:
+                path: /var/lib/grafana/dashboards/default
+      dashboards:
+        default:
+          trivy-operator:
+            gnetId: 17813
+            datasource:
+              - name: DS_PROMETHEUS
+                value: prometheus
       ingress:
         enabled: true
         annotations:

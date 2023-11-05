@@ -5,7 +5,7 @@ vagrant: Vagrantfile
 
 terraform: vagrant ansible/k3s.yaml terraform/secret.tfvars
 	terraform -chdir=terraform init
-	terraform -chdir=terraform apply -var-file=secret.tfvars
+	terraform -chdir=terraform apply -var-file=secret.tfvars -auto-approve
 
 clean:
 	vagrant destroy -f
