@@ -85,7 +85,7 @@ Vagrant.configure("2") do |config|
 
     master.vm.provider "virtualbox" do |vb|
       vb.cpus = 1
-      vb.memory = 2048
+      vb.memory = 1024
     end
   end
 
@@ -97,14 +97,14 @@ Vagrant.configure("2") do |config|
     slave.vm.network "forwarded_port", guest: 443, host: 8443
 
     slave.vm.provider "virtualbox" do |vb|
-      vb.cpus = 4
-      vb.memory = 4096
+      vb.cpus = 3
+      vb.memory = 3072
     end
   end
 
   # Alpine Linux specifics
   config.vm.provision "shell", reboot: true, inline: <<-SHELL
-    apk add python3
+    apk add python3 htop
     echo mount --make-rshared / > /etc/local.d/mount-propagation.start
     chmod +x /etc/local.d/mount-propagation.start
     rc-update add local
