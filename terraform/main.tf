@@ -54,6 +54,10 @@ resource "helm_release" "kube_prometheus_stack" {
   chart      = "kube-prometheus-stack"
   version    = "52.1.0"
 
+  depends_on = [helm_release.prometheus_operator_crds]
+  # this chart install takes a while, especially with trivy scanning
+  timeout = 900
+
   values = [
     <<-EOF
     alertmanager:
@@ -129,4 +133,23 @@ resource "helm_release" "kube_prometheus_stack" {
     name  = "grafana.adminPassword"
     value = var.grafana_admin_password
   }
+}
+
+resource "helm_release" "trivy_operator" {
+  name             = "trivy-operator"
+  namespace        = "trivy-system"
+  create_namespace = true
+
+  repository = "https://aquasecurity.github.io/helm-charts/"
+  chart      = "trivy-operator"
+  version    = "0.18.4"
+
+  depends_on = [helm_release.prometheus_operator_crds]
+
+  values = [
+    <<-EOF
+    serviceMonitor:
+      enabled: true
+    EOF
+  ]
 }
