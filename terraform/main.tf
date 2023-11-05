@@ -56,7 +56,7 @@ resource "helm_release" "kube_prometheus_stack" {
 
   depends_on = [helm_release.prometheus_operator_crds]
   # this chart install takes a while, especially with trivy scanning
-  timeout = 900
+  timeout = 1800
 
   values = [
     <<-EOF
