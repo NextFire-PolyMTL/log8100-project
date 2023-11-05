@@ -15,3 +15,15 @@ variable "gitlab_runner_token" {
   type        = string
   sensitive   = true
 }
+
+variable "alertmanager_discord_webhook_url" {
+  description = "Alertmanager Discord Webhook URL"
+  type        = string
+  sensitive   = true
+}
+
+variable "grafana_admin_password" {
+  description = "Grafana Admin Password"
+  type        = string
+  sensitive   = true
+}
