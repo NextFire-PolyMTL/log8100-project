@@ -1,6 +1,10 @@
+provider "kubernetes" {
+  config_path = var.kubeconfig_path
+}
+
 provider "helm" {
   kubernetes {
-    config_path = "../ansible/k3s.yaml"
+    config_path = var.kubeconfig_path
   }
   registry_config_path   = ".helm/config.json"
   repository_cache       = ".helm/repository"
@@ -16,18 +20,16 @@ resource "helm_release" "gitlab_runner" {
   chart      = "gitlab-runner"
   version    = 0.58
 
-  set {
-    name  = "gitlabUrl"
-    value = "https://gitlab.com"
-  }
-
-  set {
-    name  = "rbac.create"
-    value = "true"
-  }
+  values = [
+    <<-EOF
+    gitlabUrl: https://gitlab.com
+    rbac:
+      create: true
+    EOF
+  ]
 
   set_sensitive {
     name  = "runnerToken"
-    value = var.gitlabRunnerToken
+    value = var.gitlab_runner_token
   }
 }
