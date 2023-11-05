@@ -75,17 +75,31 @@ Vagrant.configure("2") do |config|
   #   apt-get install -y apache2
   # SHELL
 
+  config.vm.provider "virtualbox"
+
   config.vm.define "master" do |master|
     master.vm.hostname = "master"
+
     master.vm.network "private_network", ip: "10.100.0.100"
     master.vm.network "forwarded_port", guest: 6443, host: 6443
+
+    master.vm.provider "virtualbox" do |vb|
+      vb.cpus = 1
+      vb.memory = 1024
+    end
   end
 
   config.vm.define "slave" do |slave|
     slave.vm.hostname = "slave"
+
     slave.vm.network "private_network", ip: "10.100.0.200"
     slave.vm.network "forwarded_port", guest: 80, host: 8080
     slave.vm.network "forwarded_port", guest: 443, host: 8443
+
+    slave.vm.provider "virtualbox" do |vb|
+      vb.cpus = 2
+      vb.memory = 2048
+    end
   end
 
   config.vm.provision "shell", inline: <<-SHELL
