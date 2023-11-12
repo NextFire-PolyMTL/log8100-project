@@ -6,6 +6,8 @@ tflint:
   allow_failure: true
   image:
     name: ghcr.io/terraform-linters/tflint
+  script:
+    tflint --chdir terraform
 
 checkov:
   stage: lint
