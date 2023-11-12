@@ -3,7 +3,7 @@
   become: true
   become_user: root
   tasks:
-    - name: Fetch installation script
+    - name: Fetch install script
       ansible.builtin.get_url:
         url: https://get.k3s.io
         dest: /tmp/k3s-install.sh
@@ -16,7 +16,6 @@
         --flannel-iface {{ hostvars[inventory_hostname].internal_iface }}
       args:
         creates: /usr/local/bin/k3s
-      register: k3s_install
     - name: Wait for kubeconfig
       ansible.builtin.wait_for:
         path: /etc/rancher/k3s/k3s.yaml
@@ -41,7 +40,7 @@
   become: true
   become_user: root
   tasks:
-    - name: Fetch installation script
+    - name: Fetch install script
       ansible.builtin.get_url:
         url: https://get.k3s.io
         dest: /tmp/k3s-install.sh
