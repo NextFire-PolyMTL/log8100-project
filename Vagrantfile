@@ -80,7 +80,7 @@ Vagrant.configure("2") do |config|
   config.vm.define "master" do |master|
     master.vm.hostname = "master"
 
-    master.vm.network "private_network", ip: "10.100.0.100"
+    master.vm.network "private_network", ip: "192.168.56.100"
     master.vm.network "forwarded_port", guest: 6443, host: 6443
 
     master.vm.provider "virtualbox" do |vb|
@@ -92,7 +92,7 @@ Vagrant.configure("2") do |config|
   config.vm.define "slave" do |slave|
     slave.vm.hostname = "slave"
 
-    slave.vm.network "private_network", ip: "10.100.0.200"
+    slave.vm.network "private_network", ip: "192.168.56.200"
     slave.vm.network "forwarded_port", guest: 80, host: 8080
     slave.vm.network "forwarded_port", guest: 443, host: 8443
 
@@ -116,11 +116,11 @@ Vagrant.configure("2") do |config|
     ansible.host_vars = {
       "master" => {
         "internal_iface" => "eth1",
-        "internal_host" => "10.100.0.100",
+        "internal_host" => "192.168.56.100",
       },
       "slave" => {
         "internal_iface" => "eth1",
-        "internal_host" => "10.100.0.200"
+        "internal_host" => "192.168.56.200"
       },
     }
   end
