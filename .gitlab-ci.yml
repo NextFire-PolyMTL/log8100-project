@@ -1,14 +1,11 @@
 stages:
   - lint
 
-terrascan:
+tflint:
   stage: lint
   allow_failure: true
   image:
-    name: tenable/terrascan:latest
-    entrypoint: ['/bin/sh', '-c']
-  script:
-    - /go/bin/terrascan scan .
+    name: ghcr.io/terraform-linters/tflint
 
 checkov:
   stage: lint
@@ -25,3 +22,12 @@ checkov:
       junit: "checkov.report.xml"
     paths:
       - "checkov.report.xml"
+
+terrascan:
+  stage: lint
+  allow_failure: true
+  image:
+    name: tenable/terrascan:latest
+    entrypoint: ['/bin/sh', '-c']
+  script:
+    - /go/bin/terrascan scan .
