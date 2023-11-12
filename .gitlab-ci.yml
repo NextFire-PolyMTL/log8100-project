@@ -31,3 +31,11 @@ terrascan:
     entrypoint: ['/bin/sh', '-c']
   script:
     - /go/bin/terrascan scan .
+
+terraform-fmt:
+  stage: lint
+  allow_failure: true
+  image:
+    name: hashicorp/terraform
+  script:
+    - terraform fmt -check
