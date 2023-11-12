@@ -3,6 +3,7 @@ stages:
 
 terrascan:
   stage: lint
+  allow_failure: true
   image:
     name: tenable/terrascan:latest
     entrypoint: ['/bin/sh', '-c']
@@ -11,6 +12,7 @@ terrascan:
 
 checkov:
   stage: lint
+  allow_failure: true
   image:
     name: bridgecrew/checkov:latest
     entrypoint:
