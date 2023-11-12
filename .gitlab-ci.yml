@@ -1,0 +1,43 @@
+stages:
+  - lint
+
+tflint:
+  stage: lint
+  allow_failure: true
+  image:
+    name: ghcr.io/terraform-linters/tflint
+  script:
+    tflint --chdir terraform
+
+checkov:
+  stage: lint
+  allow_failure: true
+  image:
+    name: bridgecrew/checkov:latest
+    entrypoint:
+      - '/usr/bin/env'
+      - 'PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin'
+  script:
+    - checkov -d . -o junitxml | tee checkov.report.xml
+  artifacts:
+    reports:
+      junit: "checkov.report.xml"
+    paths:
+      - "checkov.report.xml"
+
+terrascan:
+  stage: lint
+  allow_failure: true
+  image:
+    name: tenable/terrascan:latest
+    entrypoint: ['/bin/sh', '-c']
+  script:
+    - /go/bin/terrascan scan .
+
+terraform-fmt:
+  stage: lint
+  allow_failure: true
+  image:
+    name: hashicorp/terraform
+  script:
+    - terraform fmt -check
