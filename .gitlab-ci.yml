@@ -1,0 +1,25 @@
+stages:
+  - lint
+
+terrascan:
+  stage: lint
+  image:
+    name: tenable/terrascan:latest
+    entrypoint: ['/bin/sh', '-c']
+  script:
+    - /go/bin/terrascan scan .
+
+checkov:
+  stage: lint
+  image:
+    name: bridgecrew/checkov:latest
+    entrypoint:
+      - '/usr/bin/env'
+      - 'PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin'
+  script:
+    - checkov -d . -o junitxml | tee checkov.report.xml
+  artifacts:
+    reports:
+      junit: "checkov.report.xml"
+    paths:
+      - "checkov.report.xml"
