@@ -85,7 +85,7 @@ Vagrant.configure("2") do |config|
 
     master.vm.provider "virtualbox" do |vb|
       vb.cpus = 1
-      vb.memory = 1024
+      vb.memory = 1536
     end
   end
 
@@ -98,7 +98,7 @@ Vagrant.configure("2") do |config|
 
     slave.vm.provider "virtualbox" do |vb|
       vb.cpus = 3
-      vb.memory = 3072
+      vb.memory = 2560
     end
   end
 
