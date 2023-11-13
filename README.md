@@ -1,6 +1,6 @@
 # log8100-project
 
-**Requirements:**
+## Requirements
 
 - VirtualBox
 - `vagrant`
@@ -9,6 +9,16 @@
 - `kubectl`
 - `helm`
 - `make`
+
+### ArchLinux
+
+Requirements can be installed on ArchLinux with this command:
+
+```bash
+sudo pacman -S virtualbox vagrant ansible terraform kubectl helm base-devel
+```
+
+## Configure
 
 ```sh
 # Copy the example Terraform secret file and edit it
