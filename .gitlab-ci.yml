@@ -1,7 +1,6 @@
 stages:
   - clone
-  - scan
-  - build
+  - scan_build
   - deploy
 
 variables:
@@ -14,7 +13,7 @@ clone:
     - git clone $JUICE_SHOP_REMOTE_REPO_URL
 
 tflint:
-  stage: scan
+  stage: scan_build
   allow_failure: true
   image:
     name: ghcr.io/terraform-linters/tflint
@@ -22,7 +21,7 @@ tflint:
     - tflint --chdir terraform
 
 checkov:
-  stage: scan
+  stage: scan_build
   allow_failure: true
   image:
     name: bridgecrew/checkov:latest
@@ -38,7 +37,7 @@ checkov:
       - "checkov.report.xml"
 
 terrascan:
-  stage: scan
+  stage: scan_build
   allow_failure: true
   image:
     name: tenable/terrascan:latest
@@ -47,7 +46,7 @@ terrascan:
     - /go/bin/terrascan scan .
 
 terraform-fmt:
-  stage: scan
+  stage: scan_build
   allow_failure: true
   image:
     name: hashicorp/terraform
@@ -55,7 +54,7 @@ terraform-fmt:
     - terraform fmt -check
 
 owasp_zap_scan:
-  stage: scan
+  stage: scan_build
   image: owasp/zap2docker-stable:2.12.0
   allow_failure: true
   artifacts:
@@ -68,7 +67,7 @@ owasp_zap_scan:
     - /zap/zap-baseline.py -t https://owasp-juice-shop-demo-0d931ec9d675.herokuapp.com/ -g gen.conf -x $(pwd)/owasp_zap_scan/testreport.xml
 
 build:
-  stage: build
+  stage: scan_build
   script:
     - cd juice-shop
     - npm install
