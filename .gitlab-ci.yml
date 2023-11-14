@@ -1,5 +1,13 @@
 stages:
   - lint
+  - clone
+  - build
+  - security_scan
+  - deploy
+
+variables:
+  DOCKER_IMAGE_NAME: "tuan1234/juice-shop"
+  JUICE_SHOP_REMOTE_REPO_URL: "https://github.com/juice-shop/juice-shop.git"
 
 tflint:
   stage: lint
@@ -41,3 +49,38 @@ terraform-fmt:
     name: hashicorp/terraform
   script:
     - terraform fmt -check
+
+clone:
+  stage: clone
+  script:
+    - git clone $JUICE_SHOP_REMOTE_REPO_URL
+
+build:
+  stage: build
+  script:
+    - cd juice-shop
+    - npm install
+    - npm run build -- --prod
+    - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+    - docker build -t $DOCKER_IMAGE_NAME .
+
+owasp_zap_scan:
+  stage: security_scan
+  needs: [ build ]
+  image: owasp/zap2docker-stable:2.12.0
+  allow_failure: true
+  artifacts:
+    when: always
+    expire_in: "30 days"
+    paths:
+      - "owasp_zap_scan/testreport.xml"
+  script:
+    - mkdir -p /zap/wrk owasp_zap_scan
+    - /zap/zap-baseline.py -t https://owasp-juice-shop-demo-0d931ec9d675.herokuapp.com/ -g gen.conf -x $(pwd)/owasp_zap_scan/testreport.xml
+
+deploy_docker_hub:
+  stage: deploy
+  script:
+    - docker push $DOCKER_IMAGE_NAME
+  only:
+    - master
