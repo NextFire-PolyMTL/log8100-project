@@ -19,7 +19,7 @@ tflint:
   image:
     name: ghcr.io/terraform-linters/tflint
   script:
-    tflint --chdir terraform
+    - tflint --chdir terraform
 
 checkov:
   stage: scan
@@ -64,7 +64,7 @@ build:
     - docker build -t $DOCKER_IMAGE_NAME .
 
 owasp_zap_scan:
-  stage: security_scan
+  stage: scan
   needs: [ build ]
   image: owasp/zap2docker-stable:2.12.0
   allow_failure: true
