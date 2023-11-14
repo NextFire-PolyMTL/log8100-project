@@ -61,6 +61,7 @@ build:
     - cd juice-shop
     - npm install
     - npm run build -- --prod
+    - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
     - docker build -t $DOCKER_IMAGE_NAME .
 
 owasp_zap_scan:
