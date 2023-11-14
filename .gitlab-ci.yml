@@ -6,6 +6,7 @@ stages:
 variables:
   DOCKER_IMAGE_NAME: "tuan1234/juice-shop"
   JUICE_SHOP_REMOTE_REPO_URL: "https://github.com/juice-shop/juice-shop.git"
+  SONARQUBE_TOKEN: "your_generated_token"
 
 clone:
   stage: clone
@@ -65,6 +66,18 @@ owasp_zap_scan:
   script:
     - mkdir -p /zap/wrk owasp_zap_scan
     - /zap/zap-baseline.py -t https://owasp-juice-shop-demo-0d931ec9d675.herokuapp.com/ -g gen.conf -x $(pwd)/owasp_zap_scan/testreport.xml
+
+sonarqube:
+  stage: scan
+  image:
+    name: sonarsource/sonar-scanner-cli:latest
+    entrypoint:
+      - '/usr/bin/env'
+      - 'PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin'
+  script:
+    - sonar-scanner -Dsonar.login=$SONARQUBE_TOKEN
+  only:
+    - master
 
 build:
   stage: scan_build
