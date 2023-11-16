@@ -1,0 +1,12 @@
+image:
+  repository: tuan1234/juice-shop
+  tag: latest
+  pullPolicy: ""
+
+replicaCount: 1
+
+affinity: { }
+
+ingress:
+  host: ""
+  annotations: { }
