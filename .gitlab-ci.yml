@@ -10,6 +10,7 @@ variables:
 
 clone:
   stage: clone
+  timeout: 2m
   script:
     - git clone $JUICE_SHOP_REMOTE_REPO_URL
 
@@ -42,7 +43,7 @@ terrascan:
   allow_failure: true
   image:
     name: tenable/terrascan:latest
-    entrypoint: ['/bin/sh', '-c']
+    entrypoint: [ '/bin/sh', '-c' ]
   script:
     - /go/bin/terrascan scan .
 
@@ -68,7 +69,7 @@ owasp_zap_scan:
     - /zap/zap-baseline.py -t https://owasp-juice-shop-demo-0d931ec9d675.herokuapp.com/ -g gen.conf -x $(pwd)/owasp_zap_scan/testreport.xml
 
 sonarqube:
-  stage: scan
+  stage: scan_build
   image:
     name: sonarsource/sonar-scanner-cli:latest
     entrypoint:
