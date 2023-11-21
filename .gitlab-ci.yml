@@ -1,24 +1,29 @@
 stages:
-  - lint
   - clone
-  - build
-  - security_scan
+  - scan_build
   - deploy
 
 variables:
   DOCKER_IMAGE_NAME: "tuan1234/juice-shop"
   JUICE_SHOP_REMOTE_REPO_URL: "https://github.com/juice-shop/juice-shop.git"
+  SONARQUBE_TOKEN: "your_generated_token"
+
+clone:
+  stage: clone
+  timeout: 2m
+  script:
+    - git clone $JUICE_SHOP_REMOTE_REPO_URL
 
 tflint:
-  stage: lint
+  stage: scan_build
   allow_failure: true
   image:
     name: ghcr.io/terraform-linters/tflint
   script:
-    tflint --chdir terraform
+    - tflint --chdir terraform
 
 checkov:
-  stage: lint
+  stage: scan_build
   allow_failure: true
   image:
     name: bridgecrew/checkov:latest
@@ -34,39 +39,24 @@ checkov:
       - "checkov.report.xml"
 
 terrascan:
-  stage: lint
+  stage: scan_build
   allow_failure: true
   image:
     name: tenable/terrascan:latest
-    entrypoint: ['/bin/sh', '-c']
+    entrypoint: [ '/bin/sh', '-c' ]
   script:
     - /go/bin/terrascan scan .
 
 terraform-fmt:
-  stage: lint
+  stage: scan_build
   allow_failure: true
   image:
     name: hashicorp/terraform
   script:
     - terraform fmt -check
 
-clone:
-  stage: clone
-  script:
-    - git clone $JUICE_SHOP_REMOTE_REPO_URL
-
-build:
-  stage: build
-  script:
-    - cd juice-shop
-    - npm install
-    - npm run build -- --prod
-    - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
-    - docker build -t $DOCKER_IMAGE_NAME .
-
 owasp_zap_scan:
-  stage: security_scan
-  needs: [ build ]
+  stage: scan_build
   image: owasp/zap2docker-stable:2.12.0
   allow_failure: true
   artifacts:
@@ -77,6 +67,27 @@ owasp_zap_scan:
   script:
     - mkdir -p /zap/wrk owasp_zap_scan
     - /zap/zap-baseline.py -t https://owasp-juice-shop-demo-0d931ec9d675.herokuapp.com/ -g gen.conf -x $(pwd)/owasp_zap_scan/testreport.xml
+
+sonarqube:
+  stage: scan_build
+  image:
+    name: sonarsource/sonar-scanner-cli:latest
+    entrypoint:
+      - '/usr/bin/env'
+      - 'PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin'
+  script:
+    - sonar-scanner -Dsonar.login=$SONARQUBE_TOKEN
+  only:
+    - master
+
+build:
+  stage: scan_build
+  script:
+    - cd juice-shop
+    - npm install
+    - npm run build -- --prod
+    - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+    - docker build -t $DOCKER_IMAGE_NAME .
 
 deploy_docker_hub:
   stage: deploy

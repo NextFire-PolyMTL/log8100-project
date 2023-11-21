@@ -172,3 +172,13 @@ resource "helm_release" "trivy_operator" {
     EOF
   ]
 }
+
+resource "helm_release" "sonarqube" {
+  name             = "sonarQube"
+  namespace        = "sonarqube"
+  create_namespace = true
+
+  repository = "https://SonarSource.github.io/helm-chart-sonarqube"
+  chart      = "sonarqube/sonarqube"
+  version    = "10.3.0"
+}
