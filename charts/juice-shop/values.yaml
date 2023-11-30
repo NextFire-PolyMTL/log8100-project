@@ -5,8 +5,6 @@ image:
 
 replicaCount: 1
 
-affinity: { }
-
 ingress:
   host: ""
-  annotations: { }
+  annotations: {}
