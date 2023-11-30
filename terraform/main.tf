@@ -20,6 +20,8 @@ resource "helm_release" "gitlab_runner" {
   chart      = "gitlab-runner"
   version    = "0.58.2"
 
+  timeout = var.helm_timeout
+
   values = [
     <<-EOF
     gitlabUrl: https://gitlab.com
@@ -43,6 +45,8 @@ resource "helm_release" "prometheus_operator_crds" {
   repository = "https://prometheus-community.github.io/helm-charts"
   chart      = "prometheus-operator-crds"
   version    = "6.0.0"
+
+  timeout = var.helm_timeout
 }
 
 resource "helm_release" "kube_prometheus_stack" {
@@ -55,8 +59,7 @@ resource "helm_release" "kube_prometheus_stack" {
   version    = "52.1.0"
 
   depends_on = [helm_release.prometheus_operator_crds]
-  # this chart install takes a while, especially with trivy scanning
-  timeout = 1800
+  timeout    = var.helm_timeout
 
   values = [
     <<-EOF
@@ -164,9 +167,12 @@ resource "helm_release" "trivy_operator" {
   version    = "0.18.4"
 
   depends_on = [helm_release.prometheus_operator_crds]
+  timeout    = var.helm_timeout
 
   values = [
     <<-EOF
+    operator:
+      scanJobTimeout: 30m
     serviceMonitor:
       enabled: true
     EOF
@@ -174,11 +180,13 @@ resource "helm_release" "trivy_operator" {
 }
 
 resource "helm_release" "sonarqube" {
-  name             = "sonarQube"
+  name             = "sonarqube"
   namespace        = "sonarqube"
   create_namespace = true
 
-  repository = "https://SonarSource.github.io/helm-chart-sonarqube"
-  chart      = "sonarqube/sonarqube"
+  repository = "https://sonarsource.github.io/helm-chart-sonarqube"
+  chart      = "sonarqube"
   version    = "10.3.0"
+
+  timeout = var.helm_timeout
 }

@@ -10,6 +10,12 @@ variable "domain" {
   default     = "localhost"
 }
 
+variable "helm_timeout" {
+  description = "Chart install timeout"
+  type        = number
+  default     = 3600
+}
+
 variable "gitlab_runner_token" {
   description = "GitLab Runner Token"
   type        = string
