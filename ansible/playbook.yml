@@ -1,3 +1,22 @@
+- name: Prepare
+  hosts: all
+  become: true
+  become_user: root
+  tasks:
+    - name: Install epel-release
+      ansible.builtin.package:
+        name: epel-release
+        state: present
+    - name: Install htop
+      ansible.builtin.package:
+        name: htop
+        state: present
+    - name: Disable firewalld
+      ansible.builtin.service:
+        name: firewalld
+        state: stopped
+        enabled: false
+
 - name: K3s master setup
   hosts: master
   become: true

@@ -12,7 +12,7 @@ Vagrant.configure("2") do |config|
 
   # Every Vagrant development environment requires a box. You can search for
   # boxes at https://vagrantcloud.com/search.
-  config.vm.box = "generic/alpine318"
+  config.vm.box = "generic/rocky9"
 
   # Disable automatic box update checking. If you disable this, then
   # boxes will only be checked for updates when the user runs
@@ -85,7 +85,7 @@ Vagrant.configure("2") do |config|
 
     master.vm.provider "virtualbox" do |vb|
       vb.cpus = 1
-      vb.memory = 1536
+      vb.memory = 1536  # 1.5 GB
     end
   end
 
@@ -98,17 +98,9 @@ Vagrant.configure("2") do |config|
 
     slave.vm.provider "virtualbox" do |vb|
       vb.cpus = 3
-      vb.memory = 2560
+      vb.memory = 2560  # 2.5 GB
     end
   end
-
-  # Alpine Linux specifics
-  config.vm.provision "shell", reboot: true, inline: <<-SHELL
-    apk add python3 htop
-    echo mount --make-rshared / > /etc/local.d/mount-propagation.start
-    chmod +x /etc/local.d/mount-propagation.start
-    rc-update add local
-  SHELL
 
   config.vm.provision "ansible" do |ansible|
     ansible.verbose = "v"
