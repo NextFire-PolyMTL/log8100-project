@@ -188,5 +188,31 @@ resource "helm_release" "sonarqube" {
   chart      = "sonarqube"
   version    = "10.3.0"
 
+  depends_on = [helm_release.prometheus_operator_crds]
   timeout = var.helm_timeout
+
+  values = [
+    <<-EOF
+    elasticsearch:
+      bootstrapChecks: false
+    startupProbe:
+      failureThreshold: 96
+    resources:
+      requests:
+        cpu: 0
+        memory: 0
+    persistence:
+      enabled: true
+    ingress:
+      enabled: true
+      hosts:
+        - name: sonarqube.${var.domain}
+      annotations:
+        traefik.ingress.kubernetes.io/router.entrypoints: web,websecure
+    prometheusMonitoring:
+      podMonitor:
+        enabled: true
+        namespace: sonarqube
+    EOF
+  ]
 }
