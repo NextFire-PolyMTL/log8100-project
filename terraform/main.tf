@@ -172,7 +172,7 @@ resource "helm_release" "trivy_operator" {
   values = [
     <<-EOF
     operator:
-      scanJobTimeout: 30m
+      scanJobsConcurrentLimit: 1
     serviceMonitor:
       enabled: true
     EOF
@@ -196,7 +196,7 @@ resource "helm_release" "sonarqube" {
     elasticsearch:
       bootstrapChecks: false
     startupProbe:
-      failureThreshold: 96
+      failureThreshold: 1000
     resources:
       requests:
         cpu: 0
