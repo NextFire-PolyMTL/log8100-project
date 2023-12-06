@@ -12,7 +12,7 @@ Vagrant.configure("2") do |config|
 
   # Every Vagrant development environment requires a box. You can search for
   # boxes at https://vagrantcloud.com/search.
-  config.vm.box = "generic/rocky9"
+  config.vm.box = "generic/alpine318"
 
   # Disable automatic box update checking. If you disable this, then
   # boxes will only be checked for updates when the user runs
@@ -101,6 +101,9 @@ Vagrant.configure("2") do |config|
       vb.memory = 3584  # 3.5 GB
     end
   end
+
+  # Ansible requires python3
+  config.vm.provision "shell", inline: "apk add python3"
 
   config.vm.provision "ansible" do |ansible|
     ansible.verbose = "v"

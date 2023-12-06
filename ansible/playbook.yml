@@ -3,19 +3,20 @@
   become: true
   become_user: root
   tasks:
-    - name: Install epel-release
-      ansible.builtin.package:
-        name: epel-release
-        state: present
     - name: Install htop
       ansible.builtin.package:
         name: htop
         state: present
-    - name: Disable firewalld
+    - name: Create mount propagation script
+      ansible.builtin.copy:
+        content: "mount --make-rshared /"
+        dest: /etc/local.d/mount-propagation.start
+        mode: "0755"
+    - name: Enable local service
       ansible.builtin.service:
-        name: firewalld
-        state: stopped
-        enabled: false
+        name: local
+        state: started
+        enabled: true
 
 - name: K3s master setup
   hosts: master

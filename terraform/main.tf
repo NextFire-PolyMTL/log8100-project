@@ -193,6 +193,8 @@ resource "helm_release" "sonarqube" {
 
   values = [
     <<-EOF
+    initSysctl:
+      enabled: false
     elasticsearch:
       bootstrapChecks: false
     startupProbe:
