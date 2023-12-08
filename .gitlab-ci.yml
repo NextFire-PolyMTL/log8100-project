@@ -10,7 +10,7 @@ variables:
 
 clone:
   stage: clone
-  timeout: 2m
+  timeout: 5m
   script:
     - git clone $JUICE_SHOP_REMOTE_REPO_URL
 
