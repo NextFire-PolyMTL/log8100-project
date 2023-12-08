@@ -10,10 +10,12 @@ variables:
 
 clone:
   stage: clone
-  timeout: 5m
   image: alpine/git:latest
   script:
     - git clone $JUICE_SHOP_REMOTE_REPO_URL
+  artifacts:
+    paths:
+      - juice-shop/
 
 tflint:
   stage: scan_build
