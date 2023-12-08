@@ -189,7 +189,7 @@ resource "helm_release" "sonarqube" {
   version    = "10.3.0"
 
   depends_on = [helm_release.prometheus_operator_crds]
-  timeout = var.helm_timeout
+  timeout    = var.helm_timeout
 
   values = [
     <<-EOF
@@ -215,6 +215,25 @@ resource "helm_release" "sonarqube" {
       podMonitor:
         enabled: true
         namespace: sonarqube
+    EOF
+  ]
+}
+
+resource "helm_release" "juice_shop" {
+  name             = "juice-shop"
+  namespace        = "juice-shop"
+  create_namespace = true
+
+  chart = "../charts/juice-shop"
+
+  timeout = var.helm_timeout
+
+  values = [
+    <<-EOF
+    ingress:
+      host: juice-shop.${var.domain}
+      annotations:
+        traefik.ingress.kubernetes.io/router.entrypoints: web,websecure
     EOF
   ]
 }

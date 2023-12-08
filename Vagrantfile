@@ -80,7 +80,7 @@ Vagrant.configure("2") do |config|
   config.vm.define "master" do |master|
     master.vm.hostname = "master"
 
-    master.vm.network "private_network", ip: "192.168.56.100"
+    master.vm.network "private_network", ip: "192.168.56.100", virtualbox__intnet: "log8100"
     master.vm.network "forwarded_port", guest: 6443, host: 6443
 
     master.vm.provider "virtualbox" do |vb|
@@ -92,7 +92,7 @@ Vagrant.configure("2") do |config|
   config.vm.define "slave" do |slave|
     slave.vm.hostname = "slave"
 
-    slave.vm.network "private_network", ip: "192.168.56.200"
+    slave.vm.network "private_network", ip: "192.168.56.200", virtualbox__intnet: "log8100"
     slave.vm.network "forwarded_port", guest: 80, host: 8080
     slave.vm.network "forwarded_port", guest: 443, host: 8443
 
