@@ -78,7 +78,6 @@ build:
   image: node:18.10
   script:
     - cd juice-shop
-    - pwd
     - npm install
     - npm run build -- --prod
     - docker login -u $DOCKER_LOGIN -p $DOCKER_PASWORD $CI_REGISTRY
