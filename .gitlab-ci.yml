@@ -82,8 +82,6 @@ sonarqube:
 build:
   stage: build
   image: node:20
-  dependencies:
-    - clone
   script:
     - cd juice-shop
     - npm install
