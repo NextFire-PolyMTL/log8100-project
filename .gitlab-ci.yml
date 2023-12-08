@@ -75,13 +75,10 @@ sonarqube:
 
 build:
   stage: build
-  image: node:20.10.0
+  image: node:18.10
   script:
-    - pwd
-    - ls -la
     - cd juice-shop
     - pwd
-    - ls -la
     - npm install
     - npm run build -- --prod
     - docker login -u $DOCKER_LOGIN -p $DOCKER_PASWORD $CI_REGISTRY
