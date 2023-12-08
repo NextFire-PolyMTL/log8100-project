@@ -218,3 +218,10 @@ resource "helm_release" "sonarqube" {
     EOF
   ]
 }
+
+resource "helm_release" "juice-shop" {
+  name = "juice-shop"
+  chart = "./charts/juice-shop"
+  namespace = "juice-shop"
+  create_namespace = true
+}
