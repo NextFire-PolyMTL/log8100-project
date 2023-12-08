@@ -1,4 +1,5 @@
 stages:
+  - clone
   - scan_build
   - deploy
 
@@ -8,7 +9,7 @@ variables:
   SONARQUBE_TOKEN: "your_generated_token"
 
 clone:
-  stage: scan_build
+  stage: clone
   image: alpine/git:latest
   script:
     - git clone $JUICE_SHOP_REMOTE_REPO_URL
@@ -84,7 +85,7 @@ sonarqube:
 
 build:
   stage: scan_build
-  image: node:14
+  image: node:latest
   script:
     - cd juice-shop
     - npm install
