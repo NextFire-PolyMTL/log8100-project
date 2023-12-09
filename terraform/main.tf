@@ -228,6 +228,11 @@ resource "helm_release" "juice_shop" {
 
   timeout = var.helm_timeout
 
+  set {
+    name = "pod-security.kubernetes.io/enforce"
+    value = "baseline"
+  }
+
   values = [
     <<-EOF
     ingress:
