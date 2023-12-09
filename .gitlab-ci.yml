@@ -1,5 +1,6 @@
 stages:
   - build
+  - analyze
   - deploy
 
 variables:
@@ -8,7 +9,7 @@ variables:
   SONARQUBE_TOKEN: "your_generated_token"
 
 tflint:
-  stage: build
+  stage: analyze
   allow_failure: true
   image:
     name: ghcr.io/terraform-linters/tflint
@@ -16,7 +17,7 @@ tflint:
     - tflint --chdir terraform
 
 checkov:
-  stage: build
+  stage: analyze
   allow_failure: true
   image:
     name: bridgecrew/checkov:latest
@@ -32,7 +33,7 @@ checkov:
       - "checkov.report.xml"
 
 terrascan:
-  stage: build
+  stage: analyze
   allow_failure: true
   image:
     name: tenable/terrascan:latest
@@ -41,7 +42,7 @@ terrascan:
     - /go/bin/terrascan scan .
 
 terraform-fmt:
-  stage: build
+  stage: analyze
   allow_failure: true
   image:
     name: hashicorp/terraform
@@ -49,7 +50,7 @@ terraform-fmt:
     - terraform fmt -check
 
 owasp_zap_scan:
-  stage: build
+  stage: analyze
   image: owasp/zap2docker-stable:2.12.0
   allow_failure: true
   artifacts:
@@ -62,7 +63,7 @@ owasp_zap_scan:
     - /zap/zap-baseline.py -t https://owasp-juice-shop-demo-0d931ec9d675.herokuapp.com/ -g gen.conf -x $(pwd)/owasp_zap_scan/testreport.xml
 
 sonarqube:
-  stage: build
+  stage: analyze
   image:
     name: sonarsource/sonar-scanner-cli:latest
     entrypoint:
