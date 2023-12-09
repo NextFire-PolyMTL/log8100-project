@@ -28,6 +28,12 @@ variable "alertmanager_discord_webhook_url" {
   sensitive   = true
 }
 
+variable "alertmanager_slack_api_url" {
+  description = "Alertmanager Slack API URL"
+  type        = string
+  sensitive   = true
+}
+
 variable "grafana_admin_password" {
   description = "Grafana Admin Password"
   type        = string
