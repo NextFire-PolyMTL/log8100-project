@@ -228,17 +228,13 @@ resource "helm_release" "juice_shop" {
 
   timeout = var.helm_timeout
 
-  set {
-    name = "pod-security.kubernetes.io/enforce"
-    value = "baseline"
-  }
-
   values = [
     <<-EOF
     ingress:
       host: juice-shop.${var.domain}
       annotations:
         traefik.ingress.kubernetes.io/router.entrypoints: web,websecure
+        pod-security.kubernetes.io/enforce: baseline
     EOF
   ]
 }
