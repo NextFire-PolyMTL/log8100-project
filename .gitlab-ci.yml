@@ -22,7 +22,6 @@ build_docker:
   services:
     - docker:dind
   script:
-    - docker login -u $DOCKER_LOGIN -p $DOCKER_PASWORD $CI_REGISTRY
     - docker build -t $DOCKER_IMAGE_NAME .
 
 tflint:
@@ -95,6 +94,7 @@ push_docker:
   stage: deploy
   needs: ["build_docker"]
   script:
+    - docker login -u $DOCKER_LOGIN -p $DOCKER_PASWORD $CI_REGISTRY
     - docker push $DOCKER_IMAGE_NAME
   only:
     - master
