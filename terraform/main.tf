@@ -73,6 +73,7 @@ resource "helm_release" "kube_prometheus_stack" {
       config:
         route:
           group_interval: 1m
+          receiver: discord
           routes:
             - receiver: discord
               continue: true
