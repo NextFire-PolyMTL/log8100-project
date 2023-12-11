@@ -31,14 +31,9 @@ resource "helm_release" "gitlab_runner" {
     runners:
       config: |
         [[runners]]
-          url = "https://gitlab.com"
-          token = "${var.gitlab_runner_token}"
-          executor = "docker"
-          [runners.docker]
-            tls_verify = false
-            image = "docker:latest"
+          [runners.kubernetes]
+            image = "alpine:3.18"
             privileged = true
-            volumes = ["/certs/client", "/cache"]
     EOF
   ]
 
