@@ -28,6 +28,17 @@ resource "helm_release" "gitlab_runner" {
     runnerToken:  # sensitive
     rbac:
       create: true
+    runners:
+      config: |
+        [[runners]]
+          url = "https://gitlab.com"
+          token = "${var.gitlab_runner_token}"
+          executor = "docker"
+          [runners.docker]
+            tls_verify = false
+            image = "docker:latest"
+            privileged = true
+            volumes = ["/certs/client", "/cache"]
     EOF
   ]
 
