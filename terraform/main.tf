@@ -79,7 +79,6 @@ resource "helm_release" "kube_prometheus_stack" {
             - receiver: slack
               continue: true
         receivers:
-          - name: "null"
           - name: slack
             slack_configs:
               - api_url:  # sensitive
@@ -160,12 +159,12 @@ resource "helm_release" "kube_prometheus_stack" {
   ]
 
   set_sensitive {
-    name  = "alertmanager.config.receivers[1].discord_configs[0].webhook_url"
+    name  = "alertmanager.config.receivers[0].discord_configs[0].webhook_url"
     value = var.alertmanager_discord_webhook_url
   }
 
   set_sensitive {
-    name  = "alertmanager.config.receivers[2].slack_configs[0].api_url"
+    name  = "alertmanager.config.receivers[1].slack_configs[0].api_url"
     value = var.alertmanager_slack_api_url
   }
 
