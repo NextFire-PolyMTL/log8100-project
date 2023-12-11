@@ -8,6 +8,23 @@ variables:
   JUICE_SHOP_REMOTE_REPO_URL: "https://github.com/juice-shop/juice-shop.git"
   SONARQUBE_TOKEN: "your_generated_token"
 
+build:
+  stage: build
+  image: node:18.10
+  script:
+    - cd juice-shop
+    - npm install
+    - npm run build -- --prod
+
+build_docker:
+  stage: build
+  image: docker:latest
+  services:
+    - docker:dind
+  script:
+    - docker login -u $DOCKER_LOGIN -p $DOCKER_PASWORD $CI_REGISTRY
+    - docker build -t $DOCKER_IMAGE_NAME .
+
 tflint:
   stage: analyze
   allow_failure: true
@@ -73,23 +90,6 @@ sonarqube:
     - sonar-scanner -Dsonar.login=$SONARQUBE_TOKEN
   only:
     - master
-
-build:
-  stage: build
-  image: node:18.10
-  script:
-    - cd juice-shop
-    - npm install
-    - npm run build -- --prod
-
-build_docker:
-  stage: build
-  image: docker:latest
-  services:
-    - docker:dind
-  script:
-    - docker login -u $DOCKER_LOGIN -p $DOCKER_PASWORD $CI_REGISTRY
-    - docker build -t $DOCKER_IMAGE_NAME .
 
 push_docker:
   stage: deploy
