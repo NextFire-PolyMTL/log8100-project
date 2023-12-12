@@ -39,14 +39,3 @@ variable "grafana_admin_password" {
   type        = string
   sensitive   = true
 }
-
-variable "sonarcloud_token" {
-  description = "The token for SonarCloud"
-  type        = string
-  sensitive   = true
-}
-
-variable "sonarcloud_project_key" {
-  description = "The project key for SonarCloud"
-  type        = string
-}
