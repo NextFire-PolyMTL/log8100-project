@@ -209,6 +209,16 @@ resource "helm_release" "sonarqube" {
   depends_on = [helm_release.prometheus_operator_crds]
   timeout    = var.helm_timeout
 
+  set_sensitive {
+    name  = "sonar.login"
+    value = var.sonarcloud_token
+  }
+
+  set {
+    name  = "sonar.projectKey"
+    value = var.sonarcloud_project_key
+  }
+
   values = [
     <<-EOF
     initSysctl:
