@@ -19,8 +19,9 @@ build_docker:
   script:
     - apk add git
     - cd juice-shop
-    - docker build -t $DOCKER_IMAGE_NAME .
-    - docker save $DOCKER_IMAGE_NAME > juice-shop.tar
+    - docker build -t $DOCKER_IMAGE_NAME:$CI_COMMIT_SHA .
+    - docker login -u $DOCKER_LOGIN -p $DOCKER_PASWORD $CI_REGISTRY
+    - docker push $DOCKER_IMAGE_NAME:$CI_COMMIT_SHA
 
 tflint:
   stage: lint
@@ -97,7 +98,7 @@ trivy:
     TRIVY_AUTH_URL: "$CI_REGISTRY"
     TRIVY_CACHE_DIR: ".trivycache/"
   script:
-    - docker load -i juice-shop.tar
+    - docker pull "$DOCKER_IMAGE_NAME:$CI_COMMIT_SHA"
     - time trivy image --clear-cache
     - time trivy image --download-db-only
     - time trivy image --exit-code 0 --format template --template "@/contrib/gitlab.tpl" --output "$CI_PROJECT_DIR/trivy-report.json" "$DOCKER_IMAGE_NAME"
@@ -121,6 +122,7 @@ push_docker:
   services:
     - docker:dind
   script:
-    - cd juice-shop
+    - docker pull $DOCKER_IMAGE_NAME:$CI_COMMIT_SHA
     - docker login -u $DOCKER_LOGIN -p $DOCKER_PASWORD $CI_REGISTRY
-    - docker push $DOCKER_IMAGE_NAME
+    - docker tag $DOCKER_IMAGE_NAME:$CI_COMMIT_SHA $DOCKER_IMAGE_NAME:latest
+    - docker push $DOCKER_IMAGE_NAME:latest
