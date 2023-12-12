@@ -101,9 +101,9 @@ trivy:
     - docker pull "$DOCKER_IMAGE_NAME:$CI_COMMIT_SHA"
     - time trivy image --clear-cache
     - time trivy image --download-db-only
-    - time trivy image --exit-code 0 --format template --template "@/contrib/gitlab.tpl" --output "$CI_PROJECT_DIR/trivy-report.json" "$DOCKER_IMAGE_NAME"
-    - time trivy image --exit-code 0 "$DOCKER_IMAGE_NAME"
-    - time trivy image --exit-code 1 --severity CRITICAL "$DOCKER_IMAGE_NAME"
+    - time trivy image --exit-code 0 --format template --template "@/contrib/gitlab.tpl" --output "$CI_PROJECT_DIR/trivy-report.json" "$DOCKER_IMAGE_NAME:$CI_COMMIT_SHA"
+    - time trivy image --exit-code 0 "$DOCKER_IMAGE_NAME:$CI_COMMIT_SHA"
+    - time trivy image --exit-code 1 --severity CRITICAL "$DOCKER_IMAGE_NAME:$CI_COMMIT_SHA"
   cache:
     paths:
       - .trivycache/
