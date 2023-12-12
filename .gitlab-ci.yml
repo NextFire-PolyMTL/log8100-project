@@ -8,6 +8,7 @@ variables:
   JUICE_SHOP_REMOTE_REPO_URL: "https://github.com/juice-shop/juice-shop.git"
   DOCKER_HOST: tcp://docker:2375
   DOCKER_TLS_CERTDIR: ""
+  GIT_SUBMODULE_STRATEGY: recursive
 
 build_docker:
   stage: build
