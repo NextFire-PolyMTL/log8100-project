@@ -83,14 +83,11 @@ sonarqube:
       - 'PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin'
   script:
     - sonar-scanner -Dsonar.login=$SONARQUBE_TOKEN
-  only:
-    - master
 
 push_docker:
   stage: deploy
-  needs: ["build_docker"]
+  needs: [ "build_docker" ]
   script:
+    - cd juice-shop
     - docker login -u $DOCKER_LOGIN -p $DOCKER_PASWORD $CI_REGISTRY
     - docker push $DOCKER_IMAGE_NAME
-  only:
-    - master
