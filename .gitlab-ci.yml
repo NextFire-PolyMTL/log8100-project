@@ -74,7 +74,7 @@ sonarqube:
   script:
     - sonar-scanner -Dsonar.login=$SONARQUBE_LOGIN
 
-owasp_zap_scan:
+zap:
   stage: security
   image: owasp/zap2docker-stable:2.12.0
   allow_failure: true
@@ -127,7 +127,6 @@ clair:
 push_docker:
   stage: deploy
   image: docker:latest
-  needs: ["build_docker"]
   services:
     - docker:dind
   script:
