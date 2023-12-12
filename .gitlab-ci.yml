@@ -10,14 +10,6 @@ variables:
   DOCKER_HOST: tcp://docker:2375
   DOCKER_TLS_CERTDIR: ""
 
-build:
-  stage: build
-  image: node:18.10
-  script:
-    - cd juice-shop
-    - npm install
-    - npm run build -- --prod
-
 build_docker:
   stage: build
   image: docker:latest
