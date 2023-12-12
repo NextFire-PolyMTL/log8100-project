@@ -86,9 +86,9 @@ sonarqube:
 push_docker:
   stage: deploy
   image: docker:latest
+  needs: [ "build_docker" ]
   services:
     - docker:dind
-  needs: [ "build_docker" ]
   script:
     - cd juice-shop
     - docker login -u $DOCKER_LOGIN -p $DOCKER_PASWORD $CI_REGISTRY
