@@ -86,7 +86,7 @@ sonarqube:
 push_docker:
   stage: deploy
   image: docker:latest
-  needs: [ "build_docker" ]
+  needs: ["build_docker"]
   services:
     - docker:dind
   script:
