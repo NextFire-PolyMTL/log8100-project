@@ -19,7 +19,7 @@ build_docker:
   script:
     - apk add git
     - cd juice-shop
-    - docker build -t $DOCKER_IMAGE_NAME:$CI_COMMIT_SHA .
+    - docker build --cache-from $DOCKER_IMAGE_NAME -t $DOCKER_IMAGE_NAME:$CI_COMMIT_SHA . 
     - docker login -u $DOCKER_LOGIN -p $DOCKER_PASWORD $CI_REGISTRY
     - docker push $DOCKER_IMAGE_NAME:$CI_COMMIT_SHA
 
