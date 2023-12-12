@@ -122,7 +122,12 @@ clair:
   script:
     - docker pull "$DOCKER_IMAGE_NAME:$CI_COMMIT_SHA"
     - clair -mode combo
-    - clairctl report "$DOCKER_IMAGE_NAME:$CI_COMMIT_SHA"
+    - clairctl report "$DOCKER_IMAGE_NAME:$CI_COMMIT_SHA" --format json > clair-report.json
+  artifacts:
+    when: always
+    expire_in: "1 week"
+    paths:
+      - clair-report.json
 
 push_docker:
   stage: deploy
