@@ -6,7 +6,6 @@ stages:
 variables:
   DOCKER_IMAGE_NAME: "tuan1234/juice-shop"
   JUICE_SHOP_REMOTE_REPO_URL: "https://github.com/juice-shop/juice-shop.git"
-  SONARQUBE_TOKEN: "your_generated_token"
   DOCKER_HOST: tcp://docker:2375
   DOCKER_TLS_CERTDIR: ""
 
@@ -82,7 +81,7 @@ sonarqube:
       - '/usr/bin/env'
       - 'PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin'
   script:
-    - sonar-scanner -Dsonar.login=$SONARQUBE_TOKEN
+    - sonar-scanner -Dsonar.login=$SONARQUBE_LOGIN
 
 push_docker:
   stage: deploy
