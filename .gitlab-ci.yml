@@ -115,6 +115,15 @@ trivy:
   tags:
     - docker-runner
 
+clair:
+  stage: security
+  image:
+    name: quay.io/projectquay/clair
+  script:
+    - docker pull "$DOCKER_IMAGE_NAME:$CI_COMMIT_SHA"
+    - clair -mode combo
+    - clairctl report "$DOCKER_IMAGE_NAME:$CI_COMMIT_SHA"
+
 push_docker:
   stage: deploy
   image: docker:latest
