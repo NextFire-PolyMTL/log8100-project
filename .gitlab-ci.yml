@@ -37,8 +37,8 @@ checkov:
   image:
     name: bridgecrew/checkov:latest
     entrypoint:
-      - '/usr/bin/env'
-      - 'PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin'
+      - "/usr/bin/env"
+      - "PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
   script:
     - checkov -d . --skip-path juice-shop -o junitxml | tee checkov.report.xml
   artifacts:
@@ -52,7 +52,7 @@ terrascan:
   allow_failure: true
   image:
     name: tenable/terrascan:latest
-    entrypoint: [ '/bin/sh', '-c' ]
+    entrypoint: ["/bin/sh", "-c"]
   script:
     - /go/bin/terrascan scan terraform --output json > terrascan.report.json
   artifacts:
@@ -75,10 +75,10 @@ sonarqube:
   image:
     name: sonarsource/sonar-scanner-cli:latest
     entrypoint:
-      - '/usr/bin/env'
-      - 'PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin'
+      - "/usr/bin/env"
+      - "PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
   script:
-    - sonar-scanner -Dsonar.login=$SONARQUBE_LOGIN
+    - sonar-scanner -Dsonar.host.url=http://sonarqube-sonarqube.sonarqube:9000 -Dsonar.login=$SONARQUBE_TOKEN -Dsonar.projectKey=juice-shop
 
 zap:
   stage: security

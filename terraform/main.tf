@@ -1,5 +1,5 @@
 terraform {
-  required_version = "~> 1.6.5"
+  required_version = "~> 1.5.7"
   required_providers {
     kubernetes = {
       source  = "hashicorp/kubernetes"
@@ -30,11 +30,9 @@ provider "helm" {
 }
 
 provider "sonarqube" {
-  user              = "admin"
-  pass              = "admin"
-  host              = "http://sonarqube.${var.domain}:8080"
-  installed_edition = "developer"
-  installed_version = "10.3.0"
+  user = "admin"
+  pass = var.sonarqube_password
+  host = "${var.sonarqube_host_scheme}://sonarqube.${var.domain}:${var.sonarqube_host_port}"
 }
 
 resource "helm_release" "gitlab_runner" {
@@ -46,8 +44,8 @@ resource "helm_release" "gitlab_runner" {
   chart      = "gitlab-runner"
   version    = "0.58.2"
 
-  depends_on = [sonarqube_user_token.token]
-  timeout = var.helm_timeout
+  depends_on = [sonarqube_user_token.juice_shop]
+  timeout    = var.helm_timeout
 
   values = [
     <<-EOF
@@ -56,28 +54,35 @@ resource "helm_release" "gitlab_runner" {
     rbac:
       create: true
     runners:
-      config: |
-        [[runners]]
-          [runners.feature_flags]
-            FF_USE_ADVANCED_POD_SPEC_CONFIGURATION = true
-          [runners.kubernetes]
-            image = "alpine:3.18"
-            privileged = true
-            [[runners.kubernetes.pod_spec]]
-              name = "sonarqube environment"
-              patch = '''
-                containers:
-                - env:
-                  - name: SONARQUBE_TOKEN
-                    value: ${sonarqube_user_token.token.token}
-              '''
-              patch_type = "strategic"
+      config: # sensitive
     EOF
   ]
 
   set_sensitive {
     name  = "runnerToken"
     value = var.gitlab_runner_token
+  }
+
+  set_sensitive {
+    name  = "runners.config"
+    value = <<-EOF
+      [[runners]]
+        [runners.feature_flags]
+          FF_USE_ADVANCED_POD_SPEC_CONFIGURATION = true
+        [runners.kubernetes]
+          image = "alpine:3.18"
+          privileged = true
+          [[runners.kubernetes.pod_spec]]
+            name = "sonarqube environment"
+            patch = '''
+              containers:
+                - name: build
+                  env:
+                    - name: SONARQUBE_TOKEN
+                      value: ${sonarqube_user_token.juice_shop.token}
+            '''
+            patch_type = "strategic"
+    EOF
   }
 }
 
@@ -249,6 +254,8 @@ resource "helm_release" "sonarqube" {
 
   values = [
     <<-EOF
+    account:
+      adminPassword:  # sensitive
     initSysctl:
       enabled: false
     elasticsearch:
@@ -273,19 +280,23 @@ resource "helm_release" "sonarqube" {
         namespace: sonarqube
     EOF
   ]
+
+  set_sensitive {
+    name  = "account.adminPassword"
+    value = var.sonarqube_password
+  }
 }
 
-resource "sonarqube_user_token" "token" {
-  name        = "admin-token"
+resource "sonarqube_project" "juice_shop" {
+  name    = "juice-shop"
+  project = "juice-shop"
+}
+
+resource "sonarqube_user_token" "juice_shop" {
+  name        = "juice-shop"
   type        = "PROJECT_ANALYSIS_TOKEN"
-  project_key = "juice-shop"
-  depends_on  = [helm_release.sonarqube]
-}
-
-output "project_analysis_token" {
-  value      = sonarqube_user_token.token.token
-  sensitive  = true
-  depends_on = [sonarqube_user_token.token]
+  project_key = sonarqube_project.juice_shop.project
+  depends_on  = [helm_release.sonarqube, sonarqube_project.juice_shop]
 }
 
 resource "helm_release" "juice_shop" {

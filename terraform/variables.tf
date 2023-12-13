@@ -39,3 +39,21 @@ variable "grafana_admin_password" {
   type        = string
   sensitive   = true
 }
+
+variable "sonarqube_host_scheme" {
+  description = "SonarQube Host Scheme"
+  type        = string
+  default     = "http"
+}
+
+variable "sonarqube_host_port" {
+  description = "SonarQube Host Port"
+  type        = number
+  default     = 8080
+}
+
+variable "sonarqube_password" {
+  description = "SonarQube Password"
+  type        = string
+  sensitive   = true
+}
