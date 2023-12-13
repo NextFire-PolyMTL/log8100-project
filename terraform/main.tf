@@ -199,6 +199,28 @@ resource "helm_release" "kube_prometheus_stack" {
           traefik.ingress.kubernetes.io/router.entrypoints: web,websecure
         hosts:
           - prometheus.${var.domain}
+    defaultRules:
+      additionalPrometheusRulesMap:
+        trivy.rules:
+          groups:
+          - name: trivy-rules
+          rules:
+          - alert: HighSeverityVulnerabilities
+            expr: sum(trivy_vulnerabilities{severity="HIGH"}) by (job) > 0
+            for: 5m
+            labels:
+              severity: high
+            annotations:
+              summary: "High severity vulnerabilities detected by Trivy"
+              description: "High severity vulnerabilities were found by Trivy in the scanned images."
+          - alert: MediumSeverityVulnerabilities
+            expr: sum(trivy_vulnerabilities{severity="MEDIUM"}) by (job) > 0
+            for: 5m
+            labels:
+              severity: medium
+            annotations:
+              summary: "Medium severity vulnerabilities detected by Trivy"
+              description: "Medium severity vulnerabilities were found by Trivy in the scanned images."
     EOF
   ]
 
