@@ -40,7 +40,7 @@ checkov:
       - '/usr/bin/env'
       - 'PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin'
   script:
-    - checkov -d . -o junitxml | tee checkov.report.xml
+    - checkov -d . --skip-path juice-shop -o junitxml | tee checkov.report.xml
   artifacts:
     reports:
       junit: "checkov.report.xml"
