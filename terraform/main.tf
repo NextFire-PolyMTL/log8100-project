@@ -288,15 +288,16 @@ resource "helm_release" "sonarqube" {
 }
 
 resource "sonarqube_project" "juice_shop" {
-  name    = "juice-shop"
-  project = "juice-shop"
+  name       = "juice-shop"
+  project    = "juice-shop"
+  depends_on = [helm_release.sonarqube]
 }
 
 resource "sonarqube_user_token" "juice_shop" {
   name        = "juice-shop"
   type        = "PROJECT_ANALYSIS_TOKEN"
   project_key = sonarqube_project.juice_shop.project
-  depends_on  = [helm_release.sonarqube, sonarqube_project.juice_shop]
+  depends_on  = [sonarqube_project.juice_shop]
 }
 
 resource "helm_release" "juice_shop" {
