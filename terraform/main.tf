@@ -34,6 +34,8 @@ resource "helm_release" "gitlab_runner" {
   chart      = "gitlab-runner"
   version    = "0.58.2"
 
+  depends_on = [helm_release.sonarqube]
+
   timeout = var.helm_timeout
 
   values = [
