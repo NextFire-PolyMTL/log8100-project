@@ -9,6 +9,10 @@ terraform {
       source  = "hashicorp/helm"
       version = "~> 2.11.0"
     }
+    sonarqube = {
+      source  = "jdamata/sonarqube"
+      version = "~> 0.16.9"
+    }
   }
 }
 
@@ -282,6 +286,12 @@ resource "helm_release" "juice_shop" {
         pod-security.kubernetes.io/enforce: baseline
     EOF
   ]
+}
+
+provider "sonarqube" {
+  user  = "admin"
+  pass  = "admin" 
+  host   = "http://127.0.0.1:9000"
 }
 
 resource "sonarqube_user_token" "token" {
