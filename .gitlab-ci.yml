@@ -119,7 +119,7 @@ trivy:
 clair:
   stage: security
   image:
-    name: quay.io/projectquay/clair
+    name: quay.io/projectquay/clair:4.7.2
   script:
     - docker pull "$DOCKER_IMAGE_NAME:$CI_COMMIT_SHA"
     - clair -mode combo
