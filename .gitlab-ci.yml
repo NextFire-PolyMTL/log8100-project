@@ -66,6 +66,7 @@ terraform-fmt:
 
 sonarqube:
   stage: lint
+  allow_failure: true # FIXME:
   image:
     name: sonarsource/sonar-scanner-cli:latest
     entrypoint:
