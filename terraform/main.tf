@@ -45,9 +45,20 @@ resource "helm_release" "gitlab_runner" {
     runners:
       config: |
         [[runners]]
+          [runners.feature_flags]
+            FF_USE_ADVANCED_POD_SPEC_CONFIGURATION = true
           [runners.kubernetes]
             image = "alpine:3.18"
             privileged = true
+            [[runners.kubernetes.pod_spec]]
+              name = "sonarqube environment"
+              patch = '''
+                containers:
+                - env:
+                  - name: SONARQUBE_TOKEN
+                    value: ${sonarqube_user_token.token.token}
+              '''
+              patch_type = "strategic"
     EOF
   ]
 
@@ -269,4 +280,14 @@ resource "helm_release" "juice_shop" {
         pod-security.kubernetes.io/enforce: baseline
     EOF
   ]
+}
+
+resource "sonarqube_user_token" "token" {
+  name        = "admin-token"
+  type        = "JUICE_SHOP_TOKEN"
+  project_key = "juice-shop"
+}
+
+output "project_analysis_token" {
+  value = sonarqube_user_token.token.token
 }
