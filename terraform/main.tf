@@ -29,6 +29,14 @@ provider "helm" {
   repository_config_path = ".helm/repositories.yaml"
 }
 
+provider "sonarqube" {
+  user              = "admin"
+  pass              = "admin"
+  host              = "http://sonarqube.${var.domain}:8080"
+  installed_edition = "developer"
+  installed_version = "10.3.0"
+}
+
 resource "helm_release" "gitlab_runner" {
   name             = "gitlab-runner"
   namespace        = "gitlab"
@@ -39,7 +47,6 @@ resource "helm_release" "gitlab_runner" {
   version    = "0.58.2"
 
   depends_on = [sonarqube_user_token.token]
-
   timeout = var.helm_timeout
 
   values = [
@@ -268,6 +275,19 @@ resource "helm_release" "sonarqube" {
   ]
 }
 
+resource "sonarqube_user_token" "token" {
+  name        = "admin-token"
+  type        = "PROJECT_ANALYSIS_TOKEN"
+  project_key = "juice-shop"
+  depends_on  = [helm_release.sonarqube]
+}
+
+output "project_analysis_token" {
+  value      = sonarqube_user_token.token.token
+  sensitive  = true
+  depends_on = [sonarqube_user_token.token]
+}
+
 resource "helm_release" "juice_shop" {
   name             = "juice-shop"
   namespace        = "juice-shop"
@@ -286,25 +306,4 @@ resource "helm_release" "juice_shop" {
         pod-security.kubernetes.io/enforce: baseline
     EOF
   ]
-}
-
-provider "sonarqube" {
-  user  = "admin"
-  pass  = "admin" 
-  host   = "http://sonarqube.${var.domain}:8080"
-  installed_edition = "developer"
-  installed_version = "10.3.0"
-}
-
-resource "sonarqube_user_token" "token" {
-  name        = "admin-token"
-  type        = "PROJECT_ANALYSIS_TOKEN"
-  project_key = "juice-shop"
-  depends_on = [helm_release.sonarqube]
-}
-
-output "project_analysis_token" {
-  value = sonarqube_user_token.token.token
-  sensitive = true
-  depends_on = [sonarqube_user_token.token]
 }
