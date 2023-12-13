@@ -94,11 +94,6 @@ zap:
     - docker run -p 3000:3000 -d "$DOCKER_IMAGE_NAME:$CI_COMMIT_SHA"
     - mkdir -p /zap/wrk owasp_zap_scan
     - /zap/zap-baseline.py -t http://localhost:3000/ -g gen.conf -x $(pwd)/owasp_zap_scan/testreport.xml
-  artifacts:
-    when: always
-    expire_in: "10 days"
-    paths:
-      - "owasp_zap_scan/testreport.xml"
 
 trivy:
   stage: security
