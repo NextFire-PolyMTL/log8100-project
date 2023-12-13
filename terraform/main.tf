@@ -296,7 +296,7 @@ provider "sonarqube" {
 
 resource "sonarqube_user_token" "token" {
   name        = "admin-token"
-  type        = "JUICE_SHOP_TOKEN"
+  type        = "PROJECT_ANALYSIS_TOKEN"
   project_key = "juice-shop"
 }
 
