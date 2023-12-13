@@ -125,8 +125,6 @@ trivy:
     expire_in: "1 week"
     paths:
       - trivy-report.json
-  tags:
-    - docker-runner
 
 clair:
   stage: security
