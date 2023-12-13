@@ -38,7 +38,7 @@ resource "helm_release" "gitlab_runner" {
   chart      = "gitlab-runner"
   version    = "0.58.2"
 
-  depends_on = [helm_release.sonarqube]
+  depends_on = [sonarqube_user_token.token]
 
   timeout = var.helm_timeout
 
@@ -306,4 +306,5 @@ resource "sonarqube_user_token" "token" {
 output "project_analysis_token" {
   value = sonarqube_user_token.token.token
   sensitive = true
+  depends_on = [sonarqube_user_token.token]
 }
