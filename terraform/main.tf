@@ -291,15 +291,19 @@ resource "helm_release" "juice_shop" {
 provider "sonarqube" {
   user  = "admin"
   pass  = "admin" 
-  host   = "http://127.0.0.1:9000"
+  host   = "http://sonarqube.${var.domain}:8080"
+  installed_edition = "developer"
+  installed_version = "10.3.0"
 }
 
 resource "sonarqube_user_token" "token" {
   name        = "admin-token"
   type        = "PROJECT_ANALYSIS_TOKEN"
   project_key = "juice-shop"
+  depends_on = [helm_release.sonarqube]
 }
 
 output "project_analysis_token" {
   value = sonarqube_user_token.token.token
+  sensitive = true
 }
