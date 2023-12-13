@@ -54,7 +54,12 @@ terrascan:
     name: tenable/terrascan:latest
     entrypoint: [ '/bin/sh', '-c' ]
   script:
-    - /go/bin/terrascan scan .
+    - /go/bin/terrascan scan terraform --output json > terrascan.report.json
+  artifacts:
+    when: always
+    expire_in: "1 week"
+    paths:
+      - terrascan.report.json
 
 terraform-fmt:
   stage: lint
