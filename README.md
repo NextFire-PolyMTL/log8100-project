@@ -74,7 +74,7 @@ each serving a specific purpose.
 - Check Terraform formatting.
 - Run SonarQube analysis.
 
-## Security
+### Security
 
 - Run OWASP ZAP for security testing.
 - Run Trivy for container image vulnerability scanning.
