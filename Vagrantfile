@@ -84,8 +84,8 @@ Vagrant.configure("2") do |config|
     master.vm.network "forwarded_port", guest: 6443, host: 6443
 
     master.vm.provider "virtualbox" do |vb|
-      vb.cpus = 1
-      vb.memory = 1536  # 1.5 GB
+      vb.cpus = 2
+      vb.memory = 2048  # 2 GB
     end
   end
 
@@ -98,7 +98,7 @@ Vagrant.configure("2") do |config|
 
     slave.vm.provider "virtualbox" do |vb|
       vb.cpus = 4
-      vb.memory = 3584  # 3.5 GB
+      vb.memory = 6144  # 6 GB
     end
   end
 
