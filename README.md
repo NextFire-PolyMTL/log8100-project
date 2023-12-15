@@ -27,8 +27,20 @@ sudo pacman -S virtualbox vagrant ansible terraform kubectl helm base-devel
 
 ## Usage
 
+### Preparation
+
 The default Vagrant configuration setups the master VM with 2 CPUs + 4 GB of RAM and the slave VM with 4 CPUs + 6 GB of
-RAM for optimal performances. You can change these values in the `Vagrantfile` if needed.
+RAM for optimal performances.\
+You can change these values in the `Vagrantfile` if needed.
+
+On Linux, you may need to add the following lines to your `/etc/hosts` if the Sonarqube Terraform provider fails to reach the cluster instance.
+
+```
+127.0.0.1 localhost
+127.0.0.1 sonarqube.localhost
+```
+
+### Launch
 
 ```sh
 # Copy the example Terraform secret file and edit it
