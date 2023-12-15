@@ -10,6 +10,7 @@ terraform: vagrant ansible/k3s.yaml terraform/secret.tfvars
 
 clean:
 	vagrant destroy -f
-	rm ansible/{agent-token,k3s.yaml}
+	rm -f ansible/{agent-token,k3s.yaml}
+	rm -f terraform/*.tfstate*
 
 .PHONY: all vagrant terraform clean

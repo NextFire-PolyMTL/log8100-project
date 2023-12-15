@@ -33,7 +33,7 @@ The default Vagrant configuration setups the master VM with 2 CPUs + 4 GB of RAM
 RAM for optimal performances.\
 You can change these values in the `Vagrantfile` if needed.
 
-On Linux, you may need to add the following lines to your `/etc/hosts` if the Sonarqube Terraform provider fails to reach the cluster instance.
+On Linux, you need to add the following lines to your `/etc/hosts` so the Sonarqube Terraform provider can reach the cluster instance:
 
 ```
 127.0.0.1 localhost
